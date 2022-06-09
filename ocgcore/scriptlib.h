@@ -399,8 +399,10 @@ public:
 	static int32 duel_get_turn_player(lua_State *L);
 	static int32 duel_get_turn_count(lua_State *L);
 	static int32 duel_get_draw_count(lua_State *L);
-	static int32 duel_get_start_count(lua_State* L);
+	static int32 duel_get_start_count(lua_State* L);//设置起始手牌数量
 	static int32 duel_set_start_count(lua_State* L);
+	static int32 duel_add_expzone(lua_State* L);//技能添加额外灵摆区域
+
 	static int32 duel_register_effect(lua_State *L);
 	static int32 duel_register_flag_effect(lua_State *L);
 	static int32 duel_get_flag_effect(lua_State *L);

@@ -328,7 +328,7 @@ struct card_sort {
 #define MSG_CUSTOM_MSG			180
 
 #define MSG_RESET_TIME			221
-
+#define MSG_ADDEXPZONE			225
 //Hints
 #define HINT_EVENT				1
 #define HINT_MESSAGE			2

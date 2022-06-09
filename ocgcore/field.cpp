@@ -537,11 +537,36 @@ card* field::get_field_card(uint32 playerid, uint32 location, uint32 sequence) {
 		break;
 	}
 	case LOCATION_PZONE: {
+
 		if(sequence == 0) {
-			card* pcard = player[playerid].list_szone[core.duel_rule >= 4 ? 0 : 6];
+			card* pcard;
+			//card* pcard = player[playerid].list_szone[core.duel_rule >= 4 ? 0 : 6];
+			if (core.duel_rule >= 4 && core.skilladdpzone[playerid] == FALSE)
+			{
+				pcard = player[playerid].list_szone[1];
+			}
+			else if (core.duel_rule >= 4 && core.skilladdpzone[playerid] == TRUE)
+			{
+				pcard = player[playerid].list_szone[0];
+			}
+			else {
+				pcard = player[playerid].list_szone[6];
+			}
 			return pcard && pcard->current.pzone ? pcard : 0;
-		} else if(sequence == 1) {
-			card* pcard = player[playerid].list_szone[core.duel_rule >= 4 ? 4 : 7];
+		}else if(sequence == 1) {
+			card* pcard;
+			if (core.duel_rule >= 4 && core.skilladdpzone[playerid] == FALSE)
+			{
+				pcard = player[playerid].list_szone[3];
+			}
+			else if (core.duel_rule >= 4 && core.skilladdpzone[playerid] == TRUE)
+			{
+				pcard = player[playerid].list_szone[4];
+			}
+			else {
+				pcard = player[playerid].list_szone[7];
+			}
+			//card* pcard = player[playerid].list_szone[core.duel_rule >= 4 ? 4 : 7];
 			return pcard && pcard->current.pzone ? pcard : 0;
 		} else
 			return 0;
@@ -602,11 +627,18 @@ int32 field::is_location_useable(uint32 playerid, uint32 location, uint32 sequen
 		if(flag & (0x100u << (5 + sequence)))
 			return FALSE;
 	} else if (location == LOCATION_PZONE) {
-		if(core.duel_rule >= 4) {
-			if(flag & (0x100u << (sequence * 4)))
+		if (core.duel_rule >= 4 && core.skilladdpzone[playerid] == FALSE)
+		{
+			if (flag & (0x100u << (2 * sequence + 1)))
 				return FALSE;
-		} else {
-			if(flag & (0x100u << (6 + sequence)))
+		}
+		else if (core.duel_rule >= 4 && core.skilladdpzone[playerid] == TRUE)
+		{
+			if (flag & (0x100u << (sequence * 4)))
+				return FALSE;
+		}
+		else {
+			if (flag & (0x100u << (6 + sequence)))
 				return FALSE;
 		}
 	}
@@ -804,7 +836,7 @@ int32 field::get_mzone_limit(uint8 playerid, uint8 uplayer, uint32 reason) {
 * @return the remaining count in playerid's SZONE(0~4) after applying EFFECT_MAX_SZONE.
 */
 int32 field::get_szone_limit(uint8 playerid, uint8 uplayer, uint32 reason) {
-	uint32 used_flag = player[playerid].used_location;
+	uint32 used_flag = player[playerid].used_location | 0x11ff;
 	used_flag = (used_flag >> 8) & 0x1f;
 	effect_set eset;
 	if(uplayer < 2)
@@ -1512,8 +1544,19 @@ int32 field::filter_matching_card(int32 findex, uint8 self, uint32 location1, ui
 			}
 		}
 		if(location & LOCATION_PZONE) {
-			for(int32 i = 0; i < 2; ++i) {
-				card* pcard = player[self].list_szone[core.duel_rule >= 4 ? i * 4 : i + 6];
+			for (int32 i = 0; i < 2; ++i) {
+				card* pcard;
+				if (core.duel_rule >= 4 && core.skilladdpzone[self] == FALSE)
+				{
+					pcard = player[self].list_szone[2 * i + 1];
+				}
+				else if (core.duel_rule >= 4 && core.skilladdpzone[self] == TRUE)
+				{
+					pcard = player[self].list_szone[i * 4];
+				}
+				else {
+					pcard = player[self].list_szone[i + 6];
+				}
 				if(pcard && pcard->current.pzone && !pcard->is_status(STATUS_ACTIVATE_DISABLED)
 				        && pcard != pexception && !(pexgroup && pexgroup->has_card(pcard))
 				        && pduel->lua->check_matching(pcard, findex, extraargs)
@@ -1661,7 +1704,18 @@ int32 field::filter_field_card(uint8 self, uint32 location1, uint32 location2, g
 		}
 		if(location & LOCATION_PZONE) {
 			for(int32 i = 0; i < 2; ++i) {
-				card* pcard = player[self].list_szone[core.duel_rule >= 4 ? i * 4 : i + 6];
+				card* pcard;
+				if (core.duel_rule >= 4 && core.skilladdpzone[self] == FALSE)
+				{
+					pcard = player[self].list_szone[2 * i + 1];
+				}
+				else if (core.duel_rule >= 4 && core.skilladdpzone[self] == TRUE)
+				{
+					pcard = player[self].list_szone[i * 4];
+				}
+				else {
+					pcard = player[self].list_szone[i + 6];
+				}
 				if(pcard && pcard->current.pzone) {
 					if(pgroup)
 						pgroup->container.insert(pcard);

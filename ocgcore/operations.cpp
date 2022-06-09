@@ -4495,10 +4495,42 @@ int32 field::move_to_field(uint16 step, card* target, uint32 enable, uint32 ret,
 			}
 		} else if(pzone && location == LOCATION_SZONE && (target->data.type & TYPE_PENDULUM)) {
 			uint32 flag = 0;
-			if(is_location_useable(playerid, LOCATION_PZONE, 0))
-				flag |= 0x1u << (core.duel_rule >= 4 ? 8 : 14);
-			if(is_location_useable(playerid, LOCATION_PZONE, 1))
-				flag |= 0x1u << (core.duel_rule >= 4 ? 12 : 15);
+			if (is_location_useable(playerid, LOCATION_PZONE, 0))
+			{
+				int temp;
+				if (core.duel_rule >= 4 && core.skilladdpzone[playerid] == FALSE)
+				{
+					temp = 9;
+				}
+				else if (core.duel_rule >= 4 && core.skilladdpzone[playerid] == TRUE)
+				{
+					temp = 8;
+				}
+				else {
+					temp = 14;
+				}
+				flag |= 0x1u << (temp);
+				//flag |= 0x1u << (core.duel_rule >= 4 ? 9 : 14);
+			}
+				
+			if (is_location_useable(playerid, LOCATION_PZONE, 1))
+			{
+				int temp;
+				if (core.duel_rule >= 4 && core.skilladdpzone[playerid] == FALSE)
+				{
+					temp = 11;
+				}
+				else if (core.duel_rule >= 4 && core.skilladdpzone[playerid] == TRUE)
+				{
+					temp = 12;
+				}
+				else {
+					temp = 15;
+				}
+				flag |= 0x1u << (temp);
+				//flag |= 0x1u << (core.duel_rule >= 4 ? 11 : 15);
+			}
+			
 			if(!flag) {
 				if(target->current.location != LOCATION_GRAVE)
 					send_to(target, 0, REASON_RULE, PLAYER_NONE, PLAYER_NONE, LOCATION_GRAVE, 0, POS_FACEUP);
@@ -4540,12 +4572,12 @@ int32 field::move_to_field(uint16 step, card* target, uint32 enable, uint32 ret,
 			}
 			if(move_player == playerid) {
 				if(location == LOCATION_SZONE)
-					flag = ((flag & 0xff) << 8) | 0xffff00ff;
+					flag = ((flag & 0xff) << 8) | 0xffff11ff;
 				else
 					flag = (flag & 0xff) | 0xffffff00;
 			} else {
 				if(location == LOCATION_SZONE)
-					flag = ((flag & 0xff) << 24) | 0xffffff;
+					flag = ((flag & 0xff) << 24) | 0x11ffffff;
 				else
 					flag = ((flag & 0xff) << 16) | 0xff00ffff;
 			}
