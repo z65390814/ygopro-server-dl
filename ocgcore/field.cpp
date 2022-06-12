@@ -1925,7 +1925,7 @@ void field::get_ritual_material(uint8 playerid, effect* peffect, card_set* mater
 	for(auto& pcard : player[playerid].list_mzone) {
 		if(pcard && pcard->is_affect_by_effect(peffect)
 		        && pcard->is_releasable_by_nonsummon(playerid) && pcard->is_releasable_by_effect(playerid, peffect)
-				&& (no_level || pcard->get_level() > 0))
+				&& (no_level || pcard->get_level() > 0 || pcard->is_affected_by_effect(EFFECT_MINIATURE_GARDEN_GIRL)))
 			material->insert(pcard);
 		if(pcard && pcard->is_affected_by_effect(EFFECT_OVERLAY_RITUAL_MATERIAL))
 			for(auto& mcard : pcard->xyz_materials)
@@ -1936,7 +1936,7 @@ void field::get_ritual_material(uint8 playerid, effect* peffect, card_set* mater
 		if(pcard && pcard->is_affect_by_effect(peffect)
 		        && (pcard->is_affected_by_effect(EFFECT_EXTRA_RELEASE) || is_player_affected_by_effect(playerid, EFFECT_SEA_PULSE))
 		        && pcard->is_releasable_by_nonsummon(playerid) && pcard->is_releasable_by_effect(playerid, peffect)
-				&& (no_level || pcard->get_level() > 0))
+				&& (no_level || pcard->get_level() > 0 || pcard->is_affected_by_effect(EFFECT_MINIATURE_GARDEN_GIRL)))
 			material->insert(pcard);
 	}
 	for(auto& pcard : player[playerid].list_hand)
@@ -1945,7 +1945,7 @@ void field::get_ritual_material(uint8 playerid, effect* peffect, card_set* mater
 	for(auto& pcard : player[playerid].list_grave)
 		if((pcard->data.type & TYPE_MONSTER)
 				&& pcard->is_affected_by_effect(EFFECT_EXTRA_RITUAL_MATERIAL) && pcard->is_removeable(playerid, POS_FACEUP, REASON_EFFECT)
-				&& (no_level || pcard->get_level() > 0))
+				&& (no_level || pcard->get_level() > 0 || pcard->is_affected_by_effect(EFFECT_MINIATURE_GARDEN_GIRL)))
 			material->insert(pcard);
 	for(auto& pcard : player[playerid].list_extra)
 		if(((pcard->is_affected_by_effect(EFFECT_EXTRA_RITUAL_MATERIAL) || pcard->data.type & TYPE_MONSTER) && pcard->is_affected_by_effect(EFFECT_MAP_OF_HEAVEN) && pcard->is_capable_send_to_grave(playerid))
